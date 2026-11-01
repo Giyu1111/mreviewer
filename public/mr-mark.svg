@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <defs>
+        <linearGradient id="mr-gradient" x1="8" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#22d3ee"/>
+            <stop offset="0.5" stop-color="#8b5cf6"/>
+            <stop offset="1" stop-color="#ec4899"/>
+        </linearGradient>
+    </defs>
+    <rect width="64" height="64" rx="16" fill="#1b065b"/>
+    <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="url(#mr-gradient)" stroke-width="3"/>
+    <text x="32" y="41" fill="#fff" font-family="Arial, sans-serif" font-size="25" font-weight="700" text-anchor="middle">MR</text>
+</svg>
