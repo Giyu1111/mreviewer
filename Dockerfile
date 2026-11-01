@@ -1,3 +1,4 @@
+
 FROM node:22.14-alpine AS frontend
 
 WORKDIR /app
@@ -15,20 +16,37 @@ USER root
 
 WORKDIR /var/www/html
 
-RUN install-php-extensions bcmath gd intl
+# Required PHP extensions, including PostgreSQL support
+RUN install-php-extensions \
+    bcmath \
+    gd \
+    intl \
+    pdo_pgsql
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY composer.json composer.lock ./
 
-RUN composer install --no-dev --no-interaction --prefer-dist --no-scripts --no-progress
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --prefer-dist \
+    --no-scripts \
+    --no-progress
 
 COPY . .
 
 COPY --from=frontend --chown=www-data:www-data /app/public/build ./public/build
 
 RUN composer dump-autoload --no-dev --optimize --no-interaction \
-    && mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/private storage/app/public bootstrap/cache \
+    && mkdir -p \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        storage/app/private \
+        storage/app/public \
+        bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R ug+rwX storage bootstrap/cache
 
