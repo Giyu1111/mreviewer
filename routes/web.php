@@ -1,15 +1,15 @@
 
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\StudentNotificationController;
 use App\Http\Controllers\AccountSettingsController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InstructorLessonController;
 use App\Http\Controllers\InstructorQuizController;
-use App\Http\Controllers\QuizController;
 use App\Http\Controllers\InstructorReviewController;
-use App\Models\Subject;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\StudentNotificationController;
 use App\Models\QuizAttempt;
+use App\Models\Subject;
 use Illuminate\Support\Facades\Route;
 
 // Login page
@@ -98,6 +98,7 @@ Route::get('/student/dashboard', function () {
         ])
         ->latest('started_at')
         ->get()->unique('lesson_id')->values();
+
     return view('home', compact('subjects', 'unfinishedAttempts'));
 })->middleware('auth')->name('student.dashboard');
 
@@ -108,10 +109,11 @@ Route::get('/instructor/dashboard', function () {
     $subjects = auth()->user()
         ->subjects()
         ->where('is_active', true)
+        ->withCount('lessons')
         ->orderBy('code')
         ->get();
 
-        // =========================================
+    // =========================================
     // INSTRUCTOR STUDENT PERFORMANCE ANALYTICS
     // Only include records from assigned subjects.
     // =========================================
@@ -203,7 +205,7 @@ Route::get('/instructor/dashboard', function () {
         ];
     })->values();
 
-return view('instructor.dashboard', compact('subjects', 'analytics', 'performanceBySubject'));
+    return view('instructor.dashboard', compact('subjects', 'analytics', 'performanceBySubject'));
 })->middleware('auth')->name('instructor.dashboard');
 
 // Instructor Manage Review
@@ -321,9 +323,9 @@ Route::middleware('auth')->group(function () {
     )->name('instructor.lessons.quiz.store');
 
     Route::put(
-    '/instructor/lessons/{lesson}/quiz/{question}',
-    [InstructorQuizController::class, 'update']
-)->name('instructor.lessons.quiz.update');
+        '/instructor/lessons/{lesson}/quiz/{question}',
+        [InstructorQuizController::class, 'update']
+    )->name('instructor.lessons.quiz.update');
 
     Route::delete(
         '/instructor/lessons/{lesson}/quiz/{question}',
@@ -355,16 +357,16 @@ Route::middleware('auth')->group(function () {
         ->name('quiz.take');
 
     // Submit one answer immediately.
-Route::post(
-    '/quiz/attempts/{attempt}/answer',
-    [QuizController::class, 'submitAnswer']
-)
-    ->name('quiz.submit-answer');
-// Submit one answer immediately.
+    Route::post(
+        '/quiz/attempts/{attempt}/answer',
+        [QuizController::class, 'submitAnswer']
+    )
+        ->name('quiz.submit-answer');
+    // Submit one answer immediately.
 
-Route::get(
-    '/student/reviewer-history',
-    [QuizController::class, 'history']
-)
-    ->name('student.reviewer-history');
+    Route::get(
+        '/student/reviewer-history',
+        [QuizController::class, 'history']
+    )
+        ->name('student.reviewer-history');
 });

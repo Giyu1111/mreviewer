@@ -2000,7 +2000,7 @@ dialog h3,
 
         <div class="subject-stat">
             <span class="subject-stat-label">LESSONS</span>
-            <strong class="subject-stat-value">{{ $item->lessons()->count() }}</strong>
+            <strong class="subject-stat-value">{{ $item->lessons_count }}</strong>
             <span class="subject-stat-caption">Created lessons</span>
         </div>
 
